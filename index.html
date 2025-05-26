@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>I Love Ly - Matrix Rain</title>
+  <style>
+    :root {
+      --matrix-txt: #ff69b4;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: black;
+      overflow: hidden;
+      color: var(--matrix-txt);
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+    }
+
+    .floating-text {
+      position: absolute;
+      color: #ff69b4;
+      font-size: 2rem;
+      font-weight: bold;
+      animation: fadeOut 2s ease-out forwards;
+      pointer-events: none;
+      text-shadow: 0 0 5px #ff69b4, 0 0 10px #fff;
+    }
+
+    @keyframes fadeOut {
+      0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1.5);
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrix"></canvas>
+
+  <audio autoplay loop>
+    <source src="https://cdn.pixabay.com/audio/2023/03/10/audio_7981e648f5.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <script>
+    const canvas = document.getElementById("matrix");
+    const ctx = canvas.getContext("2d");
+
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+
+    const letters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ愛LOVE♥☆彡☂".split("");
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+    const drops = Array.from({ length: columns }).fill(1);
+
+    function draw() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.font = fontSize + "px monospace";
+
+      for (let i = 0; i < drops.length; i++) {
+        ctx.fillStyle = "#ff69b4"; // pink rain
+        const text = letters[Math.floor(Math.random() * letters.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    }
+
+    setInterval(draw, 33);
+
+    // Show floating text on mouse click
+    document.addEventListener("click", (e) => {
+      const span = document.createElement("span");
+      span.classList.add("floating-text");
+      span.innerText = "I ♥ Ly";
+      span.style.left = e.clientX + "px";
+      span.style.top = e.clientY + "px";
+      document.body.appendChild(span);
+      setTimeout(() => {
+        span.remove();
+      }, 2000);
+    });
+  </script>
+</body>
+</html>
